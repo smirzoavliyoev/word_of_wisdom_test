@@ -1,13 +1,14 @@
-package hashcash
+package hashcashs
 
 import (
-	"fmt"
 	"strings"
 	"time"
+
+	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/repo"
+	"github.com/smirzoavliyoev/word_of_wisdom_test/pkg/utils"
 )
 
 const (
-	maxIterations    int    = 1 << 20        // Max iterations to find a solution
 	bytesToRead      int    = 8              // Bytes to read for random token
 	bitsPerHexChar   int    = 4              // Each hex character takes 4 bits
 	zero             rune   = 48             // ASCII code for number zero
@@ -34,7 +35,7 @@ type Config struct {
 	// tolerance for clock skew is 48 hours
 	Future time.Time
 	// Storage underlying storage where hashcash tokens are stored and retrieved.
-	// Storage Storage
+	Storage *repo.Repository
 }
 
 // DefaultConfig default hashcash configuration
@@ -67,28 +68,7 @@ type Hashcash struct {
 	// future tolerance for clock skew
 	future time.Time
 	// store the spent hashcash stamps
-	// storage Storage
-}
-
-// Compute a new hashcash header. If no solution can be found 'ErrSolutionFail'
-// error is returned.
-func (h *Hashcash) Compute() (string, error) {
-	// hex char: 0    0    0    0    0
-	// binary  : 0000 0000 0000 0000 0000 = 4 bits per char = 20 bits total
-	var (
-		wantZeros = h.bits / bitsPerHexChar
-		header    = h.createHeader()
-		hash      = utils.sha1Hash(header)
-	)
-	for !acceptableHeader(hash, zero, wantZeros) {
-		h.counter++
-		header = h.createHeader()
-		hash = utils.sha1Hash(header)
-		if h.counter >= maxIterations {
-			return "", ErrSolutionFail
-		}
-	}
-	return header, nil
+	storage *repo.Repository
 }
 
 // Verify that a hashcash header is valid. If the header is not in a valid
@@ -100,7 +80,7 @@ func (h *Hashcash) Verify(header string) (bool, error) {
 	}
 	// vals: [version bits date resource extension random counter]
 	var (
-		hash      = utils.sha1Hash(header)
+		hash      = utils.Sha1Hash(header)
 		wantZeros = h.bits / bitsPerHexChar
 	)
 	// test 1 - zero count
@@ -121,10 +101,10 @@ func (h *Hashcash) Verify(header string) (bool, error) {
 		return false, ErrResourceFail
 	}
 	// test 4 - check if hash is in spent storage
-	// if h.storage.Spent(hash) {
-	// 	return false, ErrSpent
-	// }
-	// h.storage.Add(hash)
+	if h.storage.Spent(hash) {
+		return false, ErrSpent
+	}
+	h.storage.Add(hash)
 	return true, nil
 }
 
@@ -136,17 +116,15 @@ func New(res *Resource, config *Config) (*Hashcash, error) {
 	if config == nil {
 		config = DefaultConfig
 	}
-	// if config.Storage == nil {
-	// 	storage, err := NewSQLite3DB()
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
-	// 	config.Storage = storage
-	// }
-	rand, err := utils.randomBytes(bytesToRead)
+	if config.Storage == nil {
+		config.Storage = repo.NewRepo()
+	}
+
+	rand, err := utils.RandomBytes(bytesToRead)
 	if err != nil {
 		return nil, err
 	}
+
 	return &Hashcash{
 		version:       1,
 		bits:          config.Bits,
@@ -154,11 +132,11 @@ func New(res *Resource, config *Config) (*Hashcash, error) {
 		resource:      res.Data,
 		validatorFunc: res.ValidatorFunc,
 		extension:     "",
-		rand:          utils.base64EncodeBytes(rand),
+		rand:          utils.Base64EncodeBytes(rand),
 		counter:       1,
 		expired:       config.Expired,
 		future:        config.Future,
-		// storage:       config.Storage,
+		storage:       config.Storage,
 	}, nil
 }
 
@@ -171,17 +149,6 @@ func acceptableHeader(hash string, char rune, n int) bool {
 		}
 	}
 	return true
-}
-
-// createHeader creates a new hashcash header
-func (h *Hashcash) createHeader() string {
-	return fmt.Sprintf("%d:%d:%s:%s:%s:%s:%s", h.version,
-		h.bits,
-		h.created.Format(timeFormat),
-		h.resource,
-		h.extension,
-		h.rand,
-		utils.base64EncodeInt(h.counter))
 }
 
 // parseHashcashTime parses datetime in hashcash format

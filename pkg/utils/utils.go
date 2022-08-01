@@ -10,7 +10,7 @@ import (
 )
 
 // randomBytes reads n cryptographically secure pseudo-random numbers.
-func randomBytes(n int) ([]byte, error) {
+func RandomBytes(n int) ([]byte, error) {
 	b := make([]byte, n)
 	_, err := rand.Read(b)
 	if err != nil {
@@ -20,17 +20,17 @@ func randomBytes(n int) ([]byte, error) {
 }
 
 // base64EncodeBytes
-func base64EncodeBytes(b []byte) string {
+func Base64EncodeBytes(b []byte) string {
 	return base64.StdEncoding.EncodeToString(b)
 }
 
 // base64EncodeInt
-func base64EncodeInt(n int) string {
-	return base64EncodeBytes([]byte(strconv.Itoa(n)))
+func Base64EncodeInt(n int) string {
+	return Base64EncodeBytes([]byte(strconv.Itoa(n)))
 }
 
 // sha1Hash
-func sha1Hash(s string) string {
+func Sha1Hash(s string) string {
 	hash := sha1.New()
 	_, err := io.WriteString(hash, s)
 	if err != nil {

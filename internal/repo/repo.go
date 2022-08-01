@@ -6,8 +6,9 @@ import (
 )
 
 type Repository struct {
-	Rwlock *sync.RWMutex
-	Quotas map[string]string
+	Rwlock     *sync.RWMutex
+	Quotas     map[string]string
+	UsedHashes map[string]struct{}
 }
 
 func NewRepo() *Repository {
@@ -20,6 +21,7 @@ func NewRepo() *Repository {
 			"quota4": "abc4",
 			"quota5": "abc5",
 		},
+		UsedHashes: make(map[string]struct{}),
 	}
 }
 
@@ -35,4 +37,20 @@ func (r *Repository) Get() (string, error) {
 	r.Rwlock.Unlock()
 
 	return "", nil
+}
+
+func (r *Repository) Spent(s string) bool {
+	ans := false
+	r.Rwlock.RLock()
+	_, ans = r.UsedHashes[s]
+	r.Rwlock.RUnlock()
+
+	return ans
+}
+
+func (r *Repository) Add(s string) error {
+	r.Rwlock.Lock()
+	r.UsedHashes[s] = struct{}{}
+	r.Rwlock.Unlock()
+	return nil
 }

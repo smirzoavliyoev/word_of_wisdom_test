@@ -1,4 +1,4 @@
-package hashcashs
+package hashcash
 
 import "errors"
 

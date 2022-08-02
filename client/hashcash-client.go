@@ -1,13 +1,14 @@
-package hashcashc
+package main
 
 import (
 	"fmt"
 	"time"
 
-	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/repo"
 	"github.com/smirzoavliyoev/word_of_wisdom_test/pkg/utils"
 )
 
+// https://pkg.go.dev/github.com/umahmood/hashcash
+// http://www.hashcash.org/dev/
 const (
 	maxIterations  int    = 1 << 20        // Max iterations to find a solution
 	bytesToRead    int    = 8              // Bytes to read for random token
@@ -34,8 +35,6 @@ type Config struct {
 	// Future hashcash in the future that should be rejected. Recommended
 	// tolerance for clock skew is 48 hours
 	Future time.Time
-	// Storage underlying storage where hashcash tokens are stored and retrieved.
-	Storage *repo.Repository
 }
 
 // DefaultConfig default hashcash configuration

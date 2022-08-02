@@ -1,13 +1,14 @@
-package hashcashs
+package hashcash
 
 import (
 	"strings"
 	"time"
 
-	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/repo"
+	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/hashcash/repo"
 	"github.com/smirzoavliyoev/word_of_wisdom_test/pkg/utils"
 )
 
+// http://www.hashcash.org/dev/
 const (
 	bytesToRead      int    = 8              // Bytes to read for random token
 	bitsPerHexChar   int    = 4              // Each hex character takes 4 bits

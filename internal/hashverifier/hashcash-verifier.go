@@ -1,10 +1,10 @@
-package hashcash
+package hashverifier
 
 import (
 	"strings"
 	"time"
 
-	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/hashcash/repo"
+	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/hashverifier/repo"
 	"github.com/smirzoavliyoev/word_of_wisdom_test/pkg/utils"
 )
 

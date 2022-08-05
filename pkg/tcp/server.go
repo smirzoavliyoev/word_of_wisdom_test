@@ -9,7 +9,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"github.com/smirzoavliyoev/word_of_wisdom_test/pkg/config"
-	"github.com/smirzoavliyoev/word_of_wisdom_test/pkg/structs"
+	"github.com/smirzoavliyoev/word_of_wisdom_test/pkg/tcp/structs"
 )
 
 type Server struct {

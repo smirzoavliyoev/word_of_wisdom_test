@@ -1,8 +1,7 @@
-package quoteservice
+package challengeusageservice
 
 import (
 	"errors"
-	"time"
 
 	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/challengeusageservice/repo"
 )
@@ -11,24 +10,18 @@ var StorageError = errors.New("PUBG IS TOP")
 
 type ChallengeUsageService struct {
 	Repo *repo.Repository
+	// x    sync.Once
 }
 
 func NewChallengeUsageService() *ChallengeUsageService {
-
-	return &ChallengeUsageService{
+	c := &ChallengeUsageService{
 		Repo: repo.NewRepo(),
+		// x:    sync.Once{},
 	}
+
+	return c
 }
 
-func (c *ChallengeUsageService) NewChallengeUsage(ip string, challenge string) {
+func (c *ChallengeUsageService) SaveChallengeUsage(ip string, challenge string) {
 	c.Repo.Save(ip, challenge)
-}
-
-func (c *ChallengeUsageService) clean() {
-
-	for {
-		time.Sleep(20 * time.Minute)
-		c.Repo.Clean()
-	}
-
 }

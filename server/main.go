@@ -7,6 +7,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/challengeservice"
+	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/challengeusageservice"
 	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/quoteservice"
 	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/tcp"
 	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/tcp/structs"
@@ -30,6 +31,7 @@ func main() {
 func Handler(conn net.Conn,
 	s tcp.Server,
 	chalangeService *challengeservice.ChallengeService,
+	challengeUsageService *challengeusageservice.ChallengeUsageService,
 	quotaService *quoteservice.QuotaService) {
 
 	var (
@@ -50,11 +52,13 @@ func Handler(conn net.Conn,
 
 		responseMessageType = structs.ResponseChallenge
 
-		newChallenge, err := chalangeService.GetChalange()
+		newChallenge, err := chalangeService.GetChallenge()
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
+
+		challengeUsageService.SaveChallengeUsage(conn.RemoteAddr().String(), newChallenge)
 
 		responseBody = structs.NewResponseChallengeMessage(newChallenge)
 

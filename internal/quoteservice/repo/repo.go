@@ -7,7 +7,7 @@ import (
 
 var ErrNoQuotas = errors.New("err no quotas")
 
-// HERE can use generics
+// HERE may be can use generics
 type Repository struct {
 	Rwlock *sync.RWMutex
 	Quotas map[string]string

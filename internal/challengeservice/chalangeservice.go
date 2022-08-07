@@ -34,3 +34,7 @@ func (q *ChallengeService) GetChallenge() (string, error) {
 func (q *ChallengeService) SaveChallenge(challenge string) {
 	q.Repo.Save(challenge)
 }
+
+func (c *ChallengeService) SaveChunk(ch []string) {
+	c.Repo.SaveChunk(ch)
+}

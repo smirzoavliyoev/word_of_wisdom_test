@@ -25,3 +25,11 @@ func NewChallengeUsageService() *ChallengeUsageService {
 func (c *ChallengeUsageService) SaveChallengeUsage(ip string, challenge string) {
 	c.Repo.Save(ip, challenge)
 }
+
+func (c *ChallengeUsageService) GetExpired() []string {
+	return c.Repo.Expired
+}
+
+func (c *ChallengeUsageService) EmptyExpiredData() {
+	c.Repo.EmptyExpiredData()
+}

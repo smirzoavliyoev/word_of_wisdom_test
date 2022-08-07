@@ -47,3 +47,12 @@ func (r *Repository) Save(challenge string) {
 	defer r.Rwlock.Unlock()
 	r.Chalanges["challenge"+strconv.Itoa(len(r.Chalanges))] = challenge
 }
+
+func (r *Repository) SaveChunk(chunk []string) {
+	r.Rwlock.Lock()
+	defer r.Rwlock.Unlock()
+
+	for _, v := range chunk {
+		r.Chalanges["challenge"+strconv.Itoa(len(r.Chalanges))] = v
+	}
+}

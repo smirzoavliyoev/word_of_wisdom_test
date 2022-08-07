@@ -2,6 +2,7 @@ package repo
 
 import (
 	"errors"
+	"strconv"
 	"sync"
 )
 
@@ -39,4 +40,10 @@ func (r *Repository) Get() (string, error) {
 	}
 
 	return "", nil
+}
+
+func (r *Repository) Save(challenge string) {
+	r.Rwlock.Lock()
+	defer r.Rwlock.Unlock()
+	r.Chalanges["challenge"+strconv.Itoa(len(r.Chalanges))] = challenge
 }

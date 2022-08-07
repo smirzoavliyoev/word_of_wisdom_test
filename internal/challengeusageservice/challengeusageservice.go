@@ -20,6 +20,10 @@ func NewChallengeUsageService() *ChallengeUsageService {
 	}
 }
 
+func (c *ChallengeUsageService) NewChallengeUsage(ip string, challenge string) {
+	c.Repo.Save(ip, challenge)
+}
+
 func (c *ChallengeUsageService) clean() {
 
 	for {

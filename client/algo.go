@@ -16,6 +16,8 @@ func binPow(a, b int64) int64 {
 	return z * z
 }
 
+// tried to use lexigrafical ordering of strings in specific length but its not good idea
+// may be will try to use 3sum or APSP or OV^k
 func GetNumberOfString(s string) (number int64) {
 
 	var l int64 = 1

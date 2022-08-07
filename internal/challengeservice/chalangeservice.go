@@ -18,7 +18,7 @@ func NewQuotaService() *ChallengeService {
 	}
 }
 
-func (q *ChallengeService) GetChalange() (string, error) {
+func (q *ChallengeService) GetChallenge() (string, error) {
 	quota, err := q.Repo.Get()
 	if err != nil {
 		return "", err
@@ -29,4 +29,8 @@ func (q *ChallengeService) GetChalange() (string, error) {
 	}
 
 	return quota, nil
+}
+
+func (q *ChallengeService) SaveChallenge(challenge string) {
+	q.Repo.Save(challenge)
 }

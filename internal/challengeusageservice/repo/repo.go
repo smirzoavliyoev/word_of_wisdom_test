@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-var ErrNoChallengeUsageFoundForIP = errors.New("err no chalanges found for current Ip")
+var ErrNoChallengeUsageFoundForIP = errors.New("err no challenges found for current Ip")
 
 type Repository struct {
 	Rwlock        *sync.RWMutex
@@ -43,5 +43,14 @@ func (r *Repository) Clean() {
 		if time.Since(v.CreatedAt) > time.Minute*20 {
 			delete(r.ChalangeUsage, k)
 		}
+	}
+}
+
+func (r *Repository) Save(ip string, challenge string) {
+	r.Rwlock.Lock()
+	defer r.Rwlock.Unlock()
+	r.ChalangeUsage[ip] = Item{
+		CreatedAt: time.Now(),
+		Value:     ip,
 	}
 }

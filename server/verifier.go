@@ -1,8 +1,8 @@
 package main
 
 import (
+	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/tcp"
 	"github.com/smirzoavliyoev/word_of_wisdom_test/pkg/config"
-	"github.com/smirzoavliyoev/word_of_wisdom_test/pkg/tcp"
 )
 
 type HashcashSolutionVerifierHandler struct {

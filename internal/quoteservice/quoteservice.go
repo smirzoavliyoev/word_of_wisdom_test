@@ -1,9 +1,9 @@
-package quotaservice
+package quoteservice
 
 import (
 	"errors"
 
-	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/quotaservice/repo"
+	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/quoteservice/repo"
 )
 
 var StorageError = errors.New("unknows error")

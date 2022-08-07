@@ -130,7 +130,6 @@ func New(res *Resource, config *Config) (*Hashcash, error) {
 		version:       1,
 		bits:          config.Bits,
 		created:       time.Now(),
-		resource:      res.Data,
 		validatorFunc: res.ValidatorFunc,
 		extension:     "",
 		rand:          utils.Base64EncodeBytes(rand),

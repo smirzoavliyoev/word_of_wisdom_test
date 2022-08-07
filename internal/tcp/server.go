@@ -8,8 +8,8 @@ import (
 	"net"
 
 	"github.com/sirupsen/logrus"
+	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/tcp/structs"
 	"github.com/smirzoavliyoev/word_of_wisdom_test/pkg/config"
-	"github.com/smirzoavliyoev/word_of_wisdom_test/pkg/tcp/structs"
 )
 
 type Server struct {
@@ -22,7 +22,7 @@ func NewServer(config *config.Config) *Server {
 	}
 }
 
-func (s Server) readMessage(conn net.Conn) (*structs.RequestMessage, error) {
+func (s Server) ReadMessage(conn net.Conn) (*structs.RequestMessage, error) {
 	var (
 		requestMsgBase64 string
 		requestMsgData   []byte
@@ -47,7 +47,7 @@ func (s Server) readMessage(conn net.Conn) (*structs.RequestMessage, error) {
 	return &requestMsg, nil
 }
 
-func (s Server) writeMessage(conn net.Conn, responseMsg *structs.ResponseMessage) error {
+func (s Server) WriteMessage(conn net.Conn, responseMsg *structs.ResponseMessage) error {
 	responseMsgData, err := json.Marshal(responseMsg)
 	if err != nil {
 		return err
@@ -59,7 +59,7 @@ func (s Server) writeMessage(conn net.Conn, responseMsg *structs.ResponseMessage
 	return err
 }
 
-func (s Server) Handle(handlefunc func(conn net.Conn)) error {
+func (s Server) Handle(handlefunc func(conn net.Conn, s Server)) error {
 	address := fmt.Sprintf("%s:%d", s.config.Host, s.config.Port)
 	ln, err := net.Listen("tcp", address)
 	if err != nil {
@@ -77,6 +77,6 @@ func (s Server) Handle(handlefunc func(conn net.Conn)) error {
 			continue
 		}
 
-		go handlefunc(conn)
+		go handlefunc(conn, s)
 	}
 }

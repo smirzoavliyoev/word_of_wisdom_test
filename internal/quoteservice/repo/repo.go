@@ -7,6 +7,7 @@ import (
 
 var ErrNoQuotas = errors.New("err no quotas")
 
+// HERE can use generics
 type Repository struct {
 	Rwlock *sync.RWMutex
 	Quotas map[string]string
@@ -26,15 +27,16 @@ func NewRepo() *Repository {
 }
 
 func (r *Repository) Get() (string, error) {
+	r.Rwlock.Lock()
+	defer r.Rwlock.Unlock()
+
 	if len(r.Quotas) == 0 {
 		return "", ErrNoQuotas
 	}
-	r.Rwlock.Lock()
 	for k, v := range r.Quotas {
 		delete(r.Quotas, k)
 		return v, nil
 	}
-	r.Rwlock.Unlock()
 
 	return "", nil
 }

@@ -1,11 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"net"
 
+	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/tcp"
 	"github.com/smirzoavliyoev/word_of_wisdom_test/pkg/config"
-	"github.com/smirzoavliyoev/word_of_wisdom_test/pkg/tcp"
 )
 
 func main() {
@@ -19,27 +18,10 @@ func main() {
 
 	for {
 
-		var NoQuotasFlag = false
-
 		client.Request()
 
-		response, err := client.Response()
-		if err != nil {
-			fmt.Println(err)
-		}
-		resp := response.Body
+		client.Response()
 
-		switch v := resp.(type) {
-		case string:
-			if v == "no quotas" {
-				NoQuotasFlag = true
-				break
-			}
-		}
-
-		if NoQuotasFlag {
-			break
-		}
 	}
 }
 

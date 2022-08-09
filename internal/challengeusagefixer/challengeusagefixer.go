@@ -8,6 +8,9 @@ import (
 	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/challengeusageservice"
 )
 
+// may be it will be cool to join challenge services and create one repo....
+// but it will be bad if in future we need to divide responsibilities
+// so ill keep functionalities atomic
 var once *sync.Once
 
 type ChallengeUsageFixer struct {

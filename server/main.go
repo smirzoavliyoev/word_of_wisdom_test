@@ -7,32 +7,36 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/challengeservice"
+	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/challengeusagefixer"
 	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/challengeusageservice"
 	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/quoteservice"
 	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/tcp"
 	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/tcp/structs"
+	"github.com/smirzoavliyoev/word_of_wisdom_test/pkg/config"
 )
 
 func main() {
 
-	// q := quoteservice.NewQuotaService()
+	challengeService := challengeservice.NewChallengeService()
+	challegeUsageService := challengeusageservice.NewChallengeUsageService()
+	challengeusagefixer.NewChallengeUsageFixer(challengeService, challegeUsageService)
+	quoteService := quoteservice.NewQuotaService()
 
-	// cfg, err := config.ReadConfig(config.WithSpecificConfigPathOption)
-	// if err != nil {
-	// 	panic(err)
-	// }
+	cfg, err := config.ReadConfig(config.WithSpecificConfigPathOption)
+	if err != nil {
+		panic(err)
+	}
 
-	// server := tcp.NewServer(cfg, q)
+	server := tcp.NewServer(cfg, challengeService, challegeUsageService, quoteService)
 
-	// go server.Handle(Handler)
-
+	go server.Handle(Handler)
 }
 
 func Handler(conn net.Conn,
 	s tcp.Server,
 	chalangeService *challengeservice.ChallengeService,
 	challengeUsageService *challengeusageservice.ChallengeUsageService,
-	quotaService *quoteservice.QuotaService) {
+	quotaService *quoteservice.QuoteService) {
 
 	var (
 		responseBody        interface{}

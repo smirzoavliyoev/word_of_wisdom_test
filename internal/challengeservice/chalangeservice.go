@@ -12,7 +12,7 @@ type ChallengeService struct {
 	Repo *repo.Repository
 }
 
-func NewQuotaService() *ChallengeService {
+func NewChallengeService() *ChallengeService {
 	return &ChallengeService{
 		Repo: repo.NewRepo(),
 	}

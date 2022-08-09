@@ -8,17 +8,17 @@ import (
 
 var StorageError = errors.New("unknows error")
 
-type QuotaService struct {
+type QuoteService struct {
 	Repo *repo.Repository
 }
 
-func NewQuotaService() *QuotaService {
-	return &QuotaService{
+func NewQuotaService() *QuoteService {
+	return &QuoteService{
 		Repo: repo.NewRepo(),
 	}
 }
 
-func (q *QuotaService) GetQuota() (string, error) {
+func (q *QuoteService) GetQuota() (string, error) {
 	quota, err := q.Repo.Get()
 	if err != nil {
 		return "", err

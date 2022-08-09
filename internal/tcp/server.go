@@ -8,17 +8,29 @@ import (
 	"net"
 
 	"github.com/sirupsen/logrus"
+	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/challengeservice"
+	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/challengeusageservice"
+	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/quoteservice"
 	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/tcp/structs"
 	"github.com/smirzoavliyoev/word_of_wisdom_test/pkg/config"
 )
 
 type Server struct {
-	config *config.Config
+	challengeService      *challengeservice.ChallengeService
+	challengeusageservice *challengeusageservice.ChallengeUsageService
+	quoteService          *quoteservice.QuoteService
+	config                *config.Config
 }
 
-func NewServer(config *config.Config) *Server {
+func NewServer(config *config.Config,
+	challengeService *challengeservice.ChallengeService,
+	challengeUsageService *challengeusageservice.ChallengeUsageService,
+	quoteService *quoteservice.QuoteService) *Server {
 	return &Server{
-		config: config,
+		config:                config,
+		challengeService:      challengeService,
+		challengeusageservice: challengeUsageService,
+		quoteService:          quoteService,
 	}
 }
 
@@ -59,7 +71,11 @@ func (s Server) WriteMessage(conn net.Conn, responseMsg *structs.ResponseMessage
 	return err
 }
 
-func (s Server) Handle(handlefunc func(conn net.Conn, s Server)) error {
+func (s Server) Handle(handlefunc func(conn net.Conn,
+	s Server,
+	challengeService *challengeservice.ChallengeService,
+	challengeUsageService *challengeusageservice.ChallengeUsageService,
+	quoteService *quoteservice.QuoteService)) error {
 	address := fmt.Sprintf("%s:%d", s.config.Host, s.config.Port)
 	ln, err := net.Listen("tcp", address)
 	if err != nil {
@@ -77,6 +93,6 @@ func (s Server) Handle(handlefunc func(conn net.Conn, s Server)) error {
 			continue
 		}
 
-		go handlefunc(conn, s)
+		go handlefunc(conn, s, s.challengeService, s.challengeusageservice, s.quoteService)
 	}
 }

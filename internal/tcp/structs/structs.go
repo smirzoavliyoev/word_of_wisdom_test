@@ -79,10 +79,10 @@ func NewResponseChallengeMessage(challenge string) *ResponseChallengeMessage {
 }
 
 type RequestQuoteMessage struct {
-	Challenge Challenge `json:"challenge"`
+	Challenge string `json:"challenge"`
 }
 
-func NewRequestQuoteMessage(challenge *Challenge) *RequestQuoteMessage {
+func NewRequestQuoteMessage(challenge *string) *RequestQuoteMessage {
 	return &RequestQuoteMessage{
 		Challenge: *challenge,
 	}

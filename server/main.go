@@ -29,7 +29,7 @@ func main() {
 
 	server := tcp.NewServer(cfg, challengeService, challegeUsageService, quoteService)
 
-	go server.Handle(Handler)
+	server.Handle(Handler)
 }
 
 func Handler(conn net.Conn,
@@ -46,10 +46,15 @@ func Handler(conn net.Conn,
 
 	defer conn.Close()
 
+	//check ip error
+
 	requestMsg, err := s.ReadMessage(conn)
 	if err != nil {
+		fmt.Println(err)
 		return
 	}
+
+	fmt.Println(requestMsg)
 
 	switch requestMsg.Type {
 	case structs.RequestChallenge:

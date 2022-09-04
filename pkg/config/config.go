@@ -26,7 +26,7 @@ type Options func(cfg *Config)
 
 //as second argument provide path
 func WithSpecificConfigPathOption(cfg *Config) {
-	cfg.ConfigPath = "/configs"
+	cfg.ConfigPath = "configs/config.yaml"
 }
 
 func ReadConfig(options ...Options) (*Config, error) {

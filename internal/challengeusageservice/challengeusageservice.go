@@ -23,6 +23,7 @@ func NewChallengeUsageService() *ChallengeUsageService {
 }
 
 func (c *ChallengeUsageService) SaveChallengeUsage(ip string, challenge string) {
+
 	c.Repo.Save(ip, challenge)
 }
 

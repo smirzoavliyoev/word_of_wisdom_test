@@ -1,0 +1,4 @@
+host: localhost
+port: 8090
+timeout: 10
+secret_key: just

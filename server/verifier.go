@@ -1,6 +1,9 @@
 package main
 
 import (
+	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/challengeservice"
+	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/challengeusageservice"
+	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/quoteservice"
 	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/tcp"
 	"github.com/smirzoavliyoev/word_of_wisdom_test/pkg/config"
 )
@@ -18,6 +21,9 @@ func NewRequestChallengeMessage(s *tcp.Server) *HashcashSolutionVerifierHandler 
 	}
 
 	return &HashcashSolutionVerifierHandler{
-		server: tcp.NewServer(cfg),
+		server: tcp.NewServer(cfg,
+			challengeservice.NewChallengeService(),
+			challengeusageservice.NewChallengeUsageService(),
+			quoteservice.NewQuotaService()),
 	}
 }

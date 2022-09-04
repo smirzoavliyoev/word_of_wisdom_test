@@ -52,6 +52,8 @@ func (s Server) ReadMessage(conn net.Conn) (*structs.RequestMessage, error) {
 		return nil, err
 	}
 
+	fmt.Println(string(requestMsgBase64), string(requestMsgData))
+
 	if err = json.Unmarshal(requestMsgData, &requestMsg); err != nil {
 		return nil, err
 	}
@@ -76,7 +78,11 @@ func (s Server) Handle(handlefunc func(conn net.Conn,
 	challengeService *challengeservice.ChallengeService,
 	challengeUsageService *challengeusageservice.ChallengeUsageService,
 	quoteService *quoteservice.QuoteService)) error {
+
 	address := fmt.Sprintf("%s:%d", s.config.Host, s.config.Port)
+
+	fmt.Println(address)
+
 	ln, err := net.Listen("tcp", address)
 	if err != nil {
 		return err

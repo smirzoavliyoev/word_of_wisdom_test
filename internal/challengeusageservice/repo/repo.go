@@ -2,6 +2,7 @@ package repo
 
 import (
 	"errors"
+	"fmt"
 	"sync"
 	"time"
 )
@@ -26,7 +27,7 @@ func NewRepo() *Repository {
 		Rwlock:        &sync.RWMutex{},
 		ChalangeUsage: map[string]Item{},
 	}
-	once.Do(repo.clean)
+	// once.Do(repo.clean)
 	return repo
 }
 
@@ -40,30 +41,32 @@ func (r *Repository) Get(key string) (string, error) {
 	return v.Value, nil
 }
 
-func (r *Repository) clean() {
-	go func() {
-		for {
-			time.Sleep(5 * time.Minute)
-			r.Rwlock.Lock()
+// func (r *Repository) clean() {
+// 	go func() {
+// 		for {
+// 			time.Sleep(5 * time.Minute)
+// 			r.Rwlock.Lock()
 
-			for k, v := range r.ChalangeUsage {
-				if time.Since(v.CreatedAt) > time.Minute*20 {
-					r.Expired = append(r.Expired, v.Value)
-					delete(r.ChalangeUsage, k)
-				}
-			}
-			r.Rwlock.Unlock()
-		}
-	}()
-}
+// 			for k, v := range r.ChalangeUsage {
+// 				if time.Since(v.CreatedAt) > time.Minute*20 {
+// 					r.Expired = append(r.Expired, v.Value)
+// 					delete(r.ChalangeUsage, k)
+// 				}
+// 			}
+// 			r.Rwlock.Unlock()
+// 		}
+// 	}()
+// }
 
 func (r *Repository) Save(ip string, challenge string) {
 	r.Rwlock.Lock()
 	defer r.Rwlock.Unlock()
 	r.ChalangeUsage[ip] = Item{
 		CreatedAt: time.Now(),
-		Value:     ip,
+		Value:     challenge,
 	}
+
+	fmt.Println(r.ChalangeUsage)
 }
 
 func (r *Repository) EmptyExpiredData() {

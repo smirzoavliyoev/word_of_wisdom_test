@@ -27,6 +27,8 @@ func NewChallengeUsageFixer(
 		ChallengeUsageService: cus,
 		Challengeservice:      cs,
 	}
+
+	once = &sync.Once{}
 	once.Do(cuf.fixData)
 	return cuf
 }

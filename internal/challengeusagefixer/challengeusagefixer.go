@@ -36,7 +36,7 @@ func NewChallengeUsageFixer(
 func (c *ChallengeUsageFixer) fixData() {
 	go func() {
 		for {
-			time.Sleep(20 * time.Minute)
+			time.Sleep(5 * time.Second)
 
 			expired := c.ChallengeUsageService.GetExpired()
 			// good 1 systemcall to lock

@@ -76,14 +76,12 @@ func (c *Client) Response() (*structs.ResponseMessage, error) {
 		fmt.Println("this is eof")
 	}
 
-	fmt.Println("no resp", respBase64)
-
 	respData, err := base64.StdEncoding.DecodeString(respBase64)
 	if err != nil {
 		return nil, err
 	}
 
-	fmt.Println(respData)
+	fmt.Println(string(respData))
 
 	if err = json.Unmarshal(respData, resp); err != nil {
 		return nil, err
@@ -91,64 +89,3 @@ func (c *Client) Response() (*structs.ResponseMessage, error) {
 
 	return resp, nil
 }
-
-// func (c Client) RequestChallenge() (*structs.Challenge, error) {
-// 	req := structs.NewRequestChallengeMessage()
-
-// 	if err := c.request(req); err != nil {
-// 		return nil, err
-// 	}
-
-// 	response, err := c.response()
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	if response.Type != structs.ResponseChallenge {
-// 		return nil, errors.New("response type mismatch") // TODO: make const and move out of here
-// 	}
-
-// 	bodyJson, err := json.Marshal(response.Body)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	var body structs.ResponseChallengeMessage
-
-// 	if err = json.Unmarshal(bodyJson, &body); err != nil {
-// 		return nil, err
-// 	}
-
-// 	return &body.Challenge, nil
-// }
-
-// func (c Client) RequestQuote(solvedChallenge *structs.Challenge) (string, error) {
-// 	reqBody := structs.NewRequestQuoteMessage(solvedChallenge)
-// 	req := structs.NewRequestMessage(structs.RequestQuote, reqBody)
-
-// 	if err := c.request(req); err != nil {
-// 		return "", err
-// 	}
-
-// 	response, err := c.response()
-// 	if err != nil {
-// 		return "", err
-// 	}
-
-// 	if response.Error != "" {
-// 		return "", errors.New(response.Error)
-// 	}
-
-// 	bodyJson, err := json.Marshal(response.Body)
-// 	if err != nil {
-// 		return "", err
-// 	}
-
-// 	var body structs.ResponseQuoteMessage
-
-// 	if err = json.Unmarshal(bodyJson, &body); err != nil {
-// 		return "", err
-// 	}
-
-// 	return body.Quote, nil
-// }

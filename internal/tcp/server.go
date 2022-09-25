@@ -52,7 +52,8 @@ func (s Server) ReadMessage(conn net.Conn) (*structs.RequestMessage, error) {
 		return nil, err
 	}
 
-	fmt.Println(string(requestMsgBase64), string(requestMsgData))
+	fmt.Println("---- Request message base64 ----", string(requestMsgBase64))
+	fmt.Println("---- Request message data ----", string(requestMsgData))
 
 	if err = json.Unmarshal(requestMsgData, &requestMsg); err != nil {
 		return nil, err

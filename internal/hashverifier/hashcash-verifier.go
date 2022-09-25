@@ -1,6 +1,7 @@
 package hashverifier
 
 import (
+	"fmt"
 	"strings"
 	"time"
 
@@ -76,6 +77,9 @@ type Hashcash struct {
 // format, ErrInvalidHeader error is returned.
 func (h *Hashcash) Verify(header string) (bool, error) {
 	vals := strings.Split(header, ":")
+
+	fmt.Println("---- VALS ---- ", vals, len(vals))
+
 	if len(vals) != hashcashV1Length {
 		return false, ErrInvalidHeader
 	}

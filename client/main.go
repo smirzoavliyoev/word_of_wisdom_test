@@ -1,13 +1,16 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"net"
+	"strings"
 
 	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/tcp"
+	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/tcp/structs"
 	"github.com/smirzoavliyoev/word_of_wisdom_test/pkg/config"
 )
 
@@ -85,9 +88,11 @@ func main() {
 
 	fmt.Println("response", response, ip)
 
+	ipp := strings.Split(ip, ":")
+
 	hc, err := New(
 		&Resource{
-			Data:          ip,
+			Data:          ipp[0],
 			ValidatorFunc: validateResource,
 		},
 		nil, // use default config.
@@ -107,6 +112,45 @@ func main() {
 	fmt.Println("sloution", solution)
 
 	fmt.Println("response", response)
+
+	var x = &structs.RequestMessage{}
+
+	data, err := ioutil.ReadFile("./example1.json")
+	if err != nil {
+		panic(err)
+	}
+
+	err = json.Unmarshal(data, x)
+
+	if err != nil {
+		panic(err)
+	}
+	x.Type = 1
+	x.Body = structs.RequestQuoteMessage{
+		Challenge: solution,
+	}
+
+	data, err = json.Marshal(x)
+
+	if err != nil {
+		panic(err)
+	}
+
+	_, err = client.Request(data)
+
+	if err != nil {
+		fmt.Println(err, "here")
+		return
+	}
+
+	resp, err := client.Response()
+
+	if err != nil {
+		fmt.Println(err, "here")
+		return
+	}
+
+	fmt.Println(resp)
 
 }
 

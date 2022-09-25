@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"net"
 
@@ -9,6 +8,7 @@ import (
 	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/challengeservice"
 	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/challengeusagefixer"
 	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/challengeusageservice"
+	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/hashverifier"
 	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/quoteservice"
 	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/tcp"
 	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/tcp/structs"
@@ -54,7 +54,7 @@ func Handler(conn net.Conn,
 		return
 	}
 
-	fmt.Println(requestMsg)
+	fmt.Println("---- Request message ---- ", requestMsg)
 
 	switch requestMsg.Type {
 	case structs.RequestChallenge:
@@ -72,19 +72,48 @@ func Handler(conn net.Conn,
 		responseBody = structs.NewResponseChallengeMessage(newChallenge)
 
 	case structs.RequestQuote:
+		fmt.Println(1212)
 		responseMessageType = structs.ResponseQuote
-		responseBody = structs.NewResponseQuoteMessage("")
 
-		reqBodyJson, err := json.Marshal(requestMsg.Body)
+		var body map[string]interface{}
+
+		fmt.Println(requestMsg.Body)
+		body, ok := requestMsg.Body.(map[string]interface{})
+		if !ok {
+			fmt.Println("a vot xren tebe")
+			return
+		}
+
+		hc, err := hashverifier.New(
+			&hashverifier.Resource{
+				ValidatorFunc: validatorFunc,
+				Data:          conn.LocalAddr().Network(),
+			},
+			nil,
+		)
+
+		if err != nil {
+			panic(err)
+		}
+
+		str, ok := body["challenge"].(string)
+		if !ok {
+			fmt.Println(err)
+		}
+
+		fmt.Println("str", str)
+
+		fmt.Println(body["challenge"], "here", str)
+
+		ok, err = hc.Verify(str)
+
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
 
-		var body structs.RequestQuoteMessage
-
-		if err = json.Unmarshal(reqBodyJson, &body); err != nil {
-			logrus.Error(err)
+		if !ok {
+			fmt.Println("solution failed")
 			return
 		}
 
@@ -110,4 +139,8 @@ func Handler(conn net.Conn,
 	if err = s.WriteMessage(conn, responseMsg); err != nil {
 		logrus.Error(err)
 	}
+}
+
+func validatorFunc(a string) bool {
+	return true
 }

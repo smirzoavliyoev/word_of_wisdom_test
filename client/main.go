@@ -7,7 +7,6 @@ import (
 	"io"
 	"io/ioutil"
 	"net"
-	"strings"
 
 	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/tcp"
 	"github.com/smirzoavliyoev/word_of_wisdom_test/internal/tcp/structs"
@@ -86,13 +85,13 @@ func main() {
 		fmt.Println("this is eof", err)
 	}
 
-	fmt.Println("response", response, ip)
+	fmt.Println("--- response ---", response, ip)
 
-	ipp := strings.Split(ip, ":")
+	// ipp := strings.Split(ip, ":")
 
 	hc, err := New(
 		&Resource{
-			Data:          ipp[0],
+			Data:          response.Body.(map[string]interface{})["challenge"].(string),
 			ValidatorFunc: validateResource,
 		},
 		nil, // use default config.
@@ -108,6 +107,8 @@ func main() {
 			// did not find a solution, can call compute again.
 			fmt.Println("no any solutions")
 		}
+		fmt.Println(err)
+		return
 	}
 	fmt.Println("sloution", solution)
 

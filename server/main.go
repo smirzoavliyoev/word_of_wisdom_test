@@ -84,10 +84,22 @@ func Handler(conn net.Conn,
 			return
 		}
 
+		fmt.Println("----body----- ", body)
+
+		str, ok := body["challenge"].(string)
+		if !ok {
+			fmt.Println("no chaleng body - ", body["challenge"])
+			return
+		}
+
+		fmt.Println("str", str)
+
+		fmt.Println(body["challenge"], "here", str)
+
 		hc, err := hashverifier.New(
 			&hashverifier.Resource{
 				ValidatorFunc: validatorFunc,
-				Data:          conn.LocalAddr().Network(),
+				Data:          str,
 			},
 			nil,
 		)
@@ -95,15 +107,6 @@ func Handler(conn net.Conn,
 		if err != nil {
 			panic(err)
 		}
-
-		str, ok := body["challenge"].(string)
-		if !ok {
-			fmt.Println(err)
-		}
-
-		fmt.Println("str", str)
-
-		fmt.Println(body["challenge"], "here", str)
 
 		ok, err = hc.Verify(str)
 

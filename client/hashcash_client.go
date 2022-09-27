@@ -39,7 +39,7 @@ type Config struct {
 
 // DefaultConfig default hashcash configuration
 var DefaultConfig = &Config{
-	Bits:    40,
+	Bits:    20,
 	Future:  time.Now().AddDate(0, 0, 2),
 	Expired: time.Now().AddDate(0, 0, -30),
 }
